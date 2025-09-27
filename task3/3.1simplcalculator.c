@@ -1,40 +1,7 @@
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
-int is_digit(char c)
-{
-    return c >= '0' && c <= '9';
-}
-int string_to_int(const char *str, int *valid)
-{
-    int result = 0;
-    int i = 0;
-    int is_negative = 0;
-
-    if (str[0] == '-')
-    {
-        is_negative = 1;
-        i = 1;
-    }
-
-    while (str[i] != '\0') {
-        if (!is_digit(str[i]))
-        {
-            *valid = 0;
-            return 0;
-        }
-        result = result * 10 + (str[i] - '0');
-        i++;
-    }
-
-    if (i == 0 || (i == 1 && is_negative))
-    {
-        *valid = 0;
-        return 0;
-    }
-
-    return is_negative ? -result : result;
-}
+int a2i(char *number);
 
 int main(int argc, char *argv[])
 {
@@ -43,45 +10,64 @@ int main(int argc, char *argv[])
         printf("Usage: ./calc <num1> <operator> <num2>\n");
         return 1;
     }
-    int valid1 = 1, valid2 = 1;
-    int num1 = string_to_int(argv[1], &valid1);
-    int num2 = string_to_int(argv[3], &valid2);
 
-    if (!valid1 || !valid2)
-    {
-        printf("Error: Invalid number format\n");
-        return 1;
-    }
-    if (strlen(argv[2]) != 1 || (argv[2][0] != '+' && argv[2][0] != '-' && argv[2][0] != '*' && argv[2][0] != '/'))
-    {
-        printf("Error: Invalid operator. Use +, -, *, or /\n");
-        return 1;
-    }
-    int result;
+    int num1 = a2i(argv[1]);
+    int num2 = a2i(argv[3]);
     char op = argv[2][0];
-    switch (op) {
-        case '+':
-            result = num1 + num2;
-            break;
-        case '-':
-            result = num1 - num2;
-            break;
-        case '*':
-            result = num1 * num2;
-            break;
-        case '/':
-            if (num2 == 0) {
-                printf("error; division by zero\n");
-                return 1;
-            }
-            result = num1 / num2;
-            break;
-        default:
-            printf("eror; invalid operator\n");
-            return 1;
+    int result;
 
-    printf("%s %c %s = %d\n", argv[1], op, argv[3], result);
+    switch (op)
+    {
+    case '+':
+        result = num1 + num2;
+        printf("%d\n", result);
+        break;
+    case '-':
+        result = num1 - num2;
+        printf("%d\n", result);
+        break;
+    case '*':
+        result = num1 * num2;
+        printf("%d\n", result);
+        break;
+    case '/':
+        if (num2 == 0)
+        {
+            printf("Error: Division by zero\n");
+            return 1;
+        }
+        result = num1 / num2;
+        printf("%d\n", result);
+        break;
+    default:
+        printf("Error: Unknown operator '%c'\n", op);
+        return 1;
+    }
 
     return 0;
 }
+
+int a2i(char *number)
+{
+    int result = 0;
+    int i = 0;
+    int sign = 1;
+
+    if (number[0] == '-')
+    {
+        sign = -1;
+        i++;
+    }
+
+    while (number[i] != '\0')
+    {
+        if (number[i] < '0' || number[i] > '9')
+        {
+            break;
+        }
+        result = result * 10 + (number[i] - '0');
+        i++;
+    }
+
+    return sign * result;
 }
