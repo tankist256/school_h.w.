@@ -1,5 +1,41 @@
 #include <stdio.h>
 #include <string.h>
+
+int is_digit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+int string_to_int(const char *str, int *valid)
+{
+    int result = 0;
+    int i = 0;
+    int is_negative = 0;
+
+    if (str[0] == '-')
+    {
+        is_negative = 1;
+        i = 1;
+    }
+
+    while (str[i] != '\0') {
+        if (!is_digit(str[i]))
+        {
+            *valid = 0;
+            return 0;
+        }
+        result = result * 10 + (str[i] - '0');
+        i++;
+    }
+
+    if (i == 0 || (i == 1 && is_negative))
+    {
+        *valid = 0;
+        return 0;
+    }
+
+    return is_negative ? -result : result;
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 4)
@@ -48,38 +84,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-}
-int is_digit(char c)
-{
-    return c >= '0' && c <= '9';
-}
-int string_to_int(const char *str, int *valid)
-{
-    int result = 0;
-    int i = 0;
-    int is_negative = 0;
-
-    if (str[0] == '-')
-    {
-        is_negative = 1;
-        i = 1;
-    }
-
-    while (str[i] != '\0') {
-        if (!is_digit(str[i]))
-        {
-            *valid = 0;
-            return 0;
-        }
-        result = result * 10 + (str[i] - '0');
-        i++;
-    }
-
-    if (i == 0 || (i == 1 && is_negative))
-    {
-        *valid = 0;
-        return 0;
-    }
-
-    return is_negative ? -result : result;
 }
